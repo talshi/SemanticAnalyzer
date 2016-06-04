@@ -8,6 +8,9 @@ public class ScopeManager {
 	public ScopeManager() {
 		st = new Stack<Block>();
 		isDeclaration = false;
+		
+		// TODO
+		// loop over input
 	}
 
 	private boolean isExistInCurrentBlock() {
