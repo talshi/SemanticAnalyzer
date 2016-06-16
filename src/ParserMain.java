@@ -30,8 +30,17 @@ public class ParserMain
 		*/
 		
 		// Ex2
+//		Parser p = new Parser(args);
+//		AST ast = p.yyLL1Parse();
+		
+		// Ex3
+		
 		Parser p = new Parser(args);
 		AST ast = p.yyLL1Parse();
+		
+		if(ast != null) {
+			ScopeManager sm = new ScopeManager(args[1]);
+		}
 	}
 
 }

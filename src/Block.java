@@ -2,24 +2,30 @@ import java.util.Set;
 
 public class Block {
 	
-	private static int counter;
+	private static int counter = 0;
 	private int serialNumber;
-	private Set<Token> s;
+//	private Set<TokenInfo> variables;
+	private VarBundle variables;
 
 	public Block() {
-		
 		serialNumber = counter;
 		counter++;
+		variables = new VarBundle();
 	}
 	
-	private void addVariable(Token t) {
-		// TODO
-		
+	private void addVariable(TokenInfo t) {
+//		variables.add(t);
 	}
 	
-	private boolean isVariableExists(Token t) {
-		// TODO
+	public boolean isVariableExists(TokenInfo t) {
+//		if(variables.contains(t)) {
+//			return true;
+//		}
 		return false;
+	}
+	
+	public int getSerialNumber() {
+		return this.serialNumber;
 	}
 	
 }
