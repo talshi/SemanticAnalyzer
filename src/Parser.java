@@ -109,7 +109,8 @@ public class Parser {
 
 					do{
 						token = s.yylex();
-						System.out.println("token = " + token.toString());
+						if(token != null)
+							System.out.println("token = " + token.toString());
 					}while (token == null);
 					bm.exec(token);
 					continue;
@@ -126,10 +127,10 @@ public class Parser {
 				System.err.println("[SP]ERROR: General Error.");
 				return null;
 			}
-
+			System.out.println(sthead.data + " " + token.getTokenType());
 			// get production rules
 			prod = gr.getProductionRules(sthead, token);
-
+			
 			if(prod == null) {
 				System.err.println("[SP]ERROR. Get production rules failed");
 				return null;

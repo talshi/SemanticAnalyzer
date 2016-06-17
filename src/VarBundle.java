@@ -12,16 +12,8 @@ public class VarBundle {
 		lineNumList.add(line);
 	}
 
-	public void addLine(int lineNumber) {
-		lineNumList.add(lineNumber);
-	}
-
-	public String getVarName() {
-		return this.varName;
-	}
-	
-	public List<Integer> getLineNumList() {
-		return this.lineNumList;
-	}
+	public String getVarName() { return this.varName; }
+	public List<Integer> getLineNumList() { return this.lineNumList; }
+	public void addLineNumber(int lineNum) { lineNumList.add(lineNum); }
 
 }

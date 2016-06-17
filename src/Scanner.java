@@ -188,6 +188,8 @@ public class Scanner
 			{
 				return new TokenInfo(ETokenType.EOF, line, null);
 			}
+			case ',':
+				return new TokenInfo(ETokenType.COMMA, line, null);
 			// it's a reserved word, or an ID or a function name
 			default:
 			{

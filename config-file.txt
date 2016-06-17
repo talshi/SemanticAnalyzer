@@ -1,0 +1,15 @@
+terminals=main,LC,RC,SC,INT,ID,ass,COMMA,PLUS,MULT,NUM,EOF
+P=DC;main;B,,,,DS;main;B,,,,,,,DS;main;B
+B=,LC;IS;RC,,,,,,,,,,
+IS=,I;IS,eps,,I;IS,I;IS,,,,,,
+I=,B,,,D;SC,Ass;SC,,,,,,
+D=,,,,INT;List,,,,,,,
+Ass=,,,,,ID;ass;Ex,,,,,,
+DS=eps,,,,D;SC;DS,,,,,,,
+List=,,,,,ID;Lt,,,,,,
+Lt=,,,eps,,,,COMMA;List,,,,
+Ex=,,,,,T;Et,,,,,T;Et,
+Et=,,,eps,,,,,PLUS;T;Et,,,
+T=,,,,,F;Tt,,,,,F;Tt,
+Tt=,,,eps,,,,,eps,MULT;F;Tt,,
+F=,,,,,ID,,,,,NUM,

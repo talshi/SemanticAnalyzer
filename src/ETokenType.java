@@ -28,5 +28,6 @@ public enum ETokenType
 	RC, 
 	CMMNT, 
 	WHITE, 
-	EOF
+	EOF,
+	COMMA
 }

@@ -27,21 +27,13 @@ public class Block {
 			m.put(ti.getAttribute(), vb); 
 		}
 		else {
-			vb.addLine(ti.getLine());
+			vb.addLineNumber(ti.getLine());
 		}
 	}
 
-	public VarBundle getVar(String var) {
-		return m.get(var);
-	}
-
-	public int getSerialNumber() {
-		return this.serialNumber;
-	}
-
-	public Map<String, VarBundle> getMap() {
-		return this.m;
-	}
+	public VarBundle getVar(String var) { return m.get(var); }
+	public int getSerialNumber() { return this.serialNumber; }
+	public Map<String, VarBundle> getMap() { return this.m; }
 
 //	public boolean isVariableExists(TokenInfo t) {
 //		//		if(variables.contains(t)) {
