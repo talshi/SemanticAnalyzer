@@ -20,6 +20,10 @@ public class TokenInfo
 		return this.attribute;
 	}
 	
+	public int getLine(){
+		return this.line;
+	}
+	
 	public String toString()
 	{
 		String str = "";

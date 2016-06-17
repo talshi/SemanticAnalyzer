@@ -72,7 +72,7 @@ public class ScopeManager {
 
 	private boolean isExistInCurrentBlock(TokenInfo ti) {
 		Block b = st.peek();
-		b.isVariableExists(ti);
+//		b.isVariableExists(ti);
 		return false;
 	}
 

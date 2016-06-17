@@ -20,6 +20,7 @@ public class Parser {
 	private Grammar gr = null;
 	private AST ast;
 	private TokenInfo token;
+	private BlockManager bm;
 
 	public Parser(String[] args) {
 
@@ -33,10 +34,13 @@ public class Parser {
 		s = new Scanner(inputFile);
 		gr = new Grammar(configFile);
 		ast = new AST(gr.getInitTerminal());
+		bm = new BlockManager();
 
 		// take first token from input
 		do{
 			token = s.yylex();
+			System.out.println("token = " + token.toString());
+			bm.exec(token);
 		}while (token == null);
 	}
 
@@ -67,6 +71,7 @@ public class Parser {
 			if(sthead.getData().equals("EOF")) {
 				if(token.getTokenType().toString().equals("EOF") && st.isEmpty()) {
 					printAST(filename);
+					printBM(filename);
 					return ast;
 				}
 				else if (token.getTokenType().toString().equals("EOF") && (st.pop()).getData().equals("EOF") && st.isEmpty()){
@@ -104,8 +109,9 @@ public class Parser {
 
 					do{
 						token = s.yylex();
+						System.out.println("token = " + token.toString());
 					}while (token == null);
-
+					bm.exec(token);
 					continue;
 				}
 
@@ -164,10 +170,10 @@ public class Parser {
 		} catch (IOException e) {
 			System.err.println("ERROR. Got an exception!");
 		}
-
-
 	}
 
-
+	public void printBM(String fileName) {
+		bm.print(fileName);
+	}
 
 }
