@@ -189,6 +189,7 @@ public class Scanner
 				return new TokenInfo(ETokenType.EOF, line, null);
 			}
 			case ',':
+				this.currChar = this.cr.getChar();
 				return new TokenInfo(ETokenType.COMMA, line, null);
 			// it's a reserved word, or an ID or a function name
 			default:

@@ -1,4 +1,7 @@
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -20,12 +23,20 @@ public class ScopeManager {
 		isDeclaration = false;
 		varRefList = new ArrayList<VarRefDAO>();
 		s = new Scanner(inputFile);
+		addBlock();
 
 		// loop over input
 		while(true) {
 			TokenInfo ti = s.yylex();
-			exec(ti);
+			if(ti != null && ti.getTokenType() == ETokenType.EOF) {
+				break;
+			}
+			if(ti != null) {
+				exec(ti);
+			}
 		}
+
+		
 	}
 
 	private void exec(TokenInfo ti) {
@@ -37,29 +48,35 @@ public class ScopeManager {
 			this.isDeclaration = true;
 			break;
 		case ID:
-			if(isDeclaration)
-				addVariableDeclaration(ti);
-			else
-				addVariableReference(ti);
+			if(isDeclaration) {
+				if(!addVariableDeclaration(ti)) {
+					System.err.println("ERROR: addVariableDeclaration failed.");
+				}
+			}
+			else { 
+				if(!addVariableReference(ti))
+					System.err.println("ERROR: addVariableReference failed.");
+			}
 			break;
 		case LC:
-			// add new block
 			addBlock();
 			break;
 		case RC:
+			releaseBlock();
 			break;
-		case MAIN:
-			break;
-		case ASSIGN:
-			break;
+//		case MAIN:
+//			break;
+//		case ASSIGN:
+//			break;
 		default:
 			break;
 		}
 	}
 
-
-
-	public void addVariableReference(TokenInfo ti) {
+	public boolean addVariableReference(TokenInfo ti) {
+		if(ti == null) {
+			return false;
+		}
 		String name = ti.getAttribute();
 		int line = ti.getLine();
 		int blockNum = st.peek().getSerialNumber();
@@ -75,26 +92,18 @@ public class ScopeManager {
 				declarationBlock = "" + vb.getLineNumList().get(0);
 		}
 		varRefList.add(new VarRefDAO(name, line, blockNum, declarationBlock));
+		return true;
 	}
 
+//	public int getBlockDecelerationNumber(TokenInfo ti) {
+//		// TODO
+//		return 0;
+//	}
 
-	public int getBlockDecelerationNumber(TokenInfo ti) {
-		// TODO
-		return 0;
-	}
-
-	private boolean isExistInCurrentBlock(TokenInfo ti) {
-		Block b = st.peek();
-		//		b.isVariableExists(ti);
-		return false;
-	}
-
-	//	private boolean isExist() {
-	//		// TODO
-	//		return false;
-	//	}
-
-
+//	private boolean isExistInCurrentBlock(TokenInfo ti) {
+//		Block b = st.peek();
+//		return false;
+//	}
 
 	public void printVarRefList() {
 		if(varRefList.isEmpty()) {
@@ -107,46 +116,73 @@ public class ScopeManager {
 		}
 	}
 
-	private void addVariableDeclaration(TokenInfo ti) { st.peek().addVariable(ti); }
-	private void releaseBlock() { releasedBlocks.add(st.pop()); }
-	private void logDec() { this.isDeclaration = true; }
-	private void unLogDec() { this.isDeclaration = false; }
-	public boolean isDeclaration() { return this.isDeclaration; }
-	public void addBlock(Block b) { st.push(b); }
+	private boolean addVariableDeclaration(TokenInfo ti) { 
+		if(ti != null && !st.isEmpty()) {
+			st.peek().addVariable(ti);
+			return true;
+		}
+		else {
+			System.err.println("Token is null or Stack is empty!");
+			return false;
+		}
+	}
+
+	private void releaseBlock() {
+//		releasedBlocks.add(st.pop());
+		st.pop();
+	}
+
+	private void logDec() {
+		this.isDeclaration = true;
+	}
+
+	private void unLogDec() { 
+		this.isDeclaration = false;
+	}
+
+	public boolean isDeclaration() {
+		return this.isDeclaration;
+	}
+
 	public void addBlock() {
 		Block b = new Block();
 		st.push(b);
+		releasedBlocks.add(b);
 	}
 
 	public String toString() {
 		String str = "";
-		releasedBlocks.add(st.pop());
-		for(Block b: releasedBlocks) {
-			str += "\n\nB" + b.getSerialNumber() + ":";
-			Map<String, VarBundle> m = b.getMap();
-			Set<Entry<String, VarBundle>> entrySet = m.entrySet();
-			if(entrySet.size() > 1) {
-				for(Entry<String, VarBundle> entry: entrySet) {
-					VarBundle vb = entry.getValue();
-					if(vb.getLineNumList().size() > 1) {
-						str += "\n" + vb.getVarName() + ": ";
-						for(int i = 0; i < vb.getLineNumList().size(); i++) {
-							str += vb.getLineNumList().get(i);
-							if(i < vb.getLineNumList().size()-1)
-								str += ",";
+
+		if(releasedBlocks.size() > 0) {
+			str += "redeclarations\n\n";
+			for(Block b: releasedBlocks) {
+				Map<String, VarBundle> m = b.getMap();
+				Set<Entry<String, VarBundle>> entrySet = m.entrySet();
+				if(entrySet.size() > 0 && b.isRedclareExist()) {
+					str += "B" + b.getSerialNumber() + ":";
+					for(Entry<String, VarBundle> entry: entrySet) {
+						VarBundle vb = entry.getValue();
+						if(vb.getLineNumList().size() > 1) {
+							str += "\n" + vb.getVarName() + ": ";
+							for(int i = 0; i < vb.getLineNumList().size(); i++) {
+								str += vb.getLineNumList().get(i);
+								if(i < vb.getLineNumList().size()-1)
+									str += ",";
+							}
 						}
 					}
+					str += "\n\n";
 				}
 			}
-			else {
-				str += "\nno declarations";
-			}
 		}
-		
-		str += "\nreferences\n";
+//		else {
+//			str += "\nno declarations";
+//		}
+
+		str += "references";
 		if(varRefList.size() > 0) {
 			for(int i = 0; i < varRefList.size(); i++) {
-				str += "\n" + varRefList.get(i).toString();
+				str += "\n\n" + varRefList.get(i).toString();
 			}
 		}
 		else {

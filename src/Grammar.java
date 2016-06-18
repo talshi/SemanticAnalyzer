@@ -10,7 +10,7 @@ import java.util.Map;
 
 public class Grammar {
 
-	boolean DEBUG = true;
+	boolean DEBUG = false;
 
 	private Map<String, List<Node>> prodList;
 	private NonTerminal initTerminal;

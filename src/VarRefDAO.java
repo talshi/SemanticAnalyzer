@@ -11,6 +11,9 @@ public class VarRefDAO {
 		this.blockNum = blockNum;
 		if(decBlock != null)
 			this.decLineNum = decBlock;
+		else {
+			this.decLineNum = "undeclared";
+		}
 	}
 	
 	public String toString() {

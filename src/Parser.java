@@ -11,6 +11,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Stack;
 
+import javax.sound.midi.Synthesizer;
+
 public class Parser {
 
 	private boolean DEBUG = false;
@@ -20,7 +22,6 @@ public class Parser {
 	private Grammar gr = null;
 	private AST ast;
 	private TokenInfo token;
-	private BlockManager bm;
 
 	public Parser(String[] args) {
 
@@ -34,13 +35,11 @@ public class Parser {
 		s = new Scanner(inputFile);
 		gr = new Grammar(configFile);
 		ast = new AST(gr.getInitTerminal());
-		bm = new BlockManager();
 
 		// take first token from input
 		do{
 			token = s.yylex();
-			System.out.println("token = " + token.toString());
-			bm.exec(token);
+//			System.out.println("token = " + token.toString());
 		}while (token == null);
 	}
 
@@ -71,7 +70,6 @@ public class Parser {
 			if(sthead.getData().equals("EOF")) {
 				if(token.getTokenType().toString().equals("EOF") && st.isEmpty()) {
 					printAST(filename);
-					printBM(filename);
 					return ast;
 				}
 				else if (token.getTokenType().toString().equals("EOF") && (st.pop()).getData().equals("EOF") && st.isEmpty()){
@@ -106,13 +104,11 @@ public class Parser {
 			// Terminal
 			else if(sthead.getNodeType() == NodeType.Token) {
 				if(sthead.getData().equals(token.getTokenType().toString())) {
-
 					do{
 						token = s.yylex();
-						if(token != null)
-							System.out.println("token = " + token.toString());
+//						if(token != null)
+//							System.out.println("token = " + token.toString());
 					}while (token == null);
-					bm.exec(token);
 					continue;
 				}
 
@@ -127,7 +123,7 @@ public class Parser {
 				System.err.println("[SP]ERROR: General Error.");
 				return null;
 			}
-			System.out.println(sthead.data + " " + token.getTokenType());
+//			System.out.println(sthead.data + " " + token.getTokenType());
 			// get production rules
 			prod = gr.getProductionRules(sthead, token);
 			
@@ -135,7 +131,6 @@ public class Parser {
 				System.err.println("[SP]ERROR. Get production rules failed");
 				return null;
 			}
-
 			// add children
 			// build the ast
 			// if there is an epsilon, ignore (don't push to stack and don't add node to ast) 
@@ -143,7 +138,7 @@ public class Parser {
 				System.err.println("[SP]ERROR. adding children to current node failed");
 				System.exit(0); // TODO return null ?
 			}
-
+			
 			// push prod to the stack
 			for (int i = ast.getCurrent().getChildren().size()-1; i >= 0; i--){
 				st.push(ast.getCurrent().getChildren().get(i));
@@ -172,9 +167,4 @@ public class Parser {
 			System.err.println("ERROR. Got an exception!");
 		}
 	}
-
-	public void printBM(String fileName) {
-		bm.print(fileName);
-	}
-
 }

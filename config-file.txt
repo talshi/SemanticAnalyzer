@@ -1,10 +1,10 @@
-terminals=main,LC,RC,SC,INT,ID,ass,COMMA,PLUS,MULT,NUM,EOF
-P=DC;main;B,,,,DS;main;B,,,,,,,DS;main;B
+terminals=MAIN,LC,RC,SC,INT,ID,ASSIGN,COMMA,PLUS,MULT,NUM,EOF
+P=DC;MAIN;B,,,,DS;MAIN;B,,,,,,,DS;MAIN;B
 B=,LC;IS;RC,,,,,,,,,,
 IS=,I;IS,eps,,I;IS,I;IS,,,,,,
 I=,B,,,D;SC,Ass;SC,,,,,,
 D=,,,,INT;List,,,,,,,
-Ass=,,,,,ID;ass;Ex,,,,,,
+Ass=,,,,,ID;ASSIGN;Ex,,,,,,
 DS=eps,,,,D;SC;DS,,,,,,,
 List=,,,,,ID;Lt,,,,,,
 Lt=,,,eps,,,,COMMA;List,,,,
